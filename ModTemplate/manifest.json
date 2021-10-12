@@ -3,7 +3,7 @@
   "author": "Vesper",
   "name": "ScoutStreaming",
   "uniqueName": "Vesper.ScoutStreaming",
-  "description": "Turns the universe into ASCII! Not",
-  "version": "0.1.0",
+  "description": "Turns the scout's images into live feed!",
+  "version": "1.0.0",
   "owmlVersion": "0.7.3"
 }
