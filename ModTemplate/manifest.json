@@ -4,6 +4,6 @@
   "name": "ScoutStreaming",
   "uniqueName": "Vesper.ScoutStreaming",
   "description": "Turns the universe into ASCII! Not",
-  "version": "0.1.0",
-  "owmlVersion": "0.7.3"
+  "version": "1.1.0",
+  "owmlVersion": "2.0.0"
 }

@@ -15,11 +15,23 @@ namespace ScoutStreaming
         private MethodInfo snapshotMethod;
         private void Start()
         {
-            snapshotMethod = typeof(QuantumObject).GetMethod("OnProbeSnapshot",
-                   BindingFlags.NonPublic | BindingFlags.Instance);
+            ModHelper.Console.WriteLine("Skipping splash screen...");
+            var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
+            titleScreenAnimation.SetValue("_fadeDuration", 0);
+            titleScreenAnimation.SetValue("_gamepadSplash", false);
+            titleScreenAnimation.SetValue("_introPan", false);
+            titleScreenAnimation.Invoke("FadeInTitleLogo");
+            ModHelper.Console.WriteLine("Done!");
+
+   
             Instance = this;
 
+            snapshotMethod = typeof(QuantumObject).GetMethod("OnProbeSnapshot",
+                      BindingFlags.NonPublic | BindingFlags.Instance); 
+
             ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("TakeSnapshotWithCamera", typeof(ScoutPatch), "SnapshotPatch");
+            ModHelper.HarmonyHelper.AddPostfix<SatelliteSnapshotController>("OnPressInteract", typeof(ScoutPatch), "HearthianSatteliteOnPatch");
+            ModHelper.HarmonyHelper.AddPostfix<SatelliteSnapshotController>("TurnOffProjector", typeof(ScoutPatch), "HearthianSatteliteOffPatch");
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
         }
         private void Update()
@@ -37,32 +49,36 @@ namespace ScoutStreaming
             if (newScene == OWScene.SolarSystem)
             {
                 quantumObjects = FindObjectsOfType<QuantumObject>();
+                OWML.Utils.TypeExtensions.SetValue(FindObjectOfType<ProbeLauncherUI>(), "s_takeSnapshotPrompt", new ScreenPrompt("Start Filming"));
             }
+
         }
         private static void SnapshotPatch(ProbeCamera camera)
         {
             Instance.probeCamera = camera;
 
-            switch (camera.GetOWCamera().gameObject.name)
+            foreach (var probeCamera in FindObjectsOfType<ProbeCamera>())
             {
-                case "RearCamera":
-                    GameObject.Find("RotatingCamera").GetComponent<OWCamera>().enabled = false;
-                    GameObject.Find("ForwardCamera").GetComponent<OWCamera>().enabled = false;
-                    break;
-                case "RotatingCamera":
-                    GameObject.Find("RearCamera").GetComponent<OWCamera>().enabled = false;
-                    GameObject.Find("ForwardCamera").GetComponent<OWCamera>().enabled = false;
-                    break;
-                case "ForwardCamera":
-                    GameObject.Find("RotatingCamera").GetComponent<OWCamera>().enabled = false;
-                    GameObject.Find("RearCamera").GetComponent<OWCamera>().enabled = false;
-                    break;
+                probeCamera.GetComponent<OWCamera>().enabled = false;
             }
+
 
             camera.GetOWCamera().enabled = true;
             Instance.ModHelper.Console.WriteLine(camera.GetOWCamera().gameObject.name + " on");
         }
 
+        private static void HearthianSatteliteOnPatch()
+        {
+            SatelliteSnapshotController museumProjector = FindObjectOfType<SatelliteSnapshotController>();
+            var value = OWML.Utils.TypeExtensions.GetValue<OWCamera>(museumProjector, "_satelliteCamera");
+            value.enabled = true;
+        }   
+        private static void HearthianSatteliteOffPatch()
+        {
+            SatelliteSnapshotController museumProjector = FindObjectOfType<SatelliteSnapshotController>();
+            var value = OWML.Utils.TypeExtensions.GetValue<OWCamera>(museumProjector, "_satelliteCamera");
+            value.enabled = false;
+        }
 
     }
 }
