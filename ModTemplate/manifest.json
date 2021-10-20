@@ -5,5 +5,5 @@
   "uniqueName": "Vesper.ScoutStreaming",
   "description": "Turns the scout's images into live feed!",
   "version": "1.0.0",
-  "owmlVersion": "0.7.3"
+  "owmlVersion": "2.0.0"
 }
