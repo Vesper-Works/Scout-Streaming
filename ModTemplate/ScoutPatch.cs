@@ -53,30 +53,28 @@ namespace ScoutStreaming
 
         private static void EquipToolPatch()
         {
-            ProbeLauncher playerProbeLauncher = null;
             foreach (var launcher in FindObjectsOfType<ProbeLauncher>())
             {
-                if (launcher.GetName().ToString() == "Player")
+                if (launcher.IsEquipped())
                 {
-                    playerProbeLauncher = launcher;
+                    launcher.SendMessage("TakeSnapshotWithCamera", launcher.GetValue<ProbeCamera>("_preLaunchCamera"));
+                    EnableCamera(launcher.GetValue<ProbeCamera>("_preLaunchCamera"));
                 }
             }
-            playerProbeLauncher.SendMessage("TakeSnapshotWithCamera", playerProbeLauncher.GetValue<ProbeCamera>("_preLaunchCamera"));
-            EnableCamera(playerProbeLauncher.GetValue<ProbeCamera>("_preLaunchCamera"));
+
         }
 
         private static void LaunchProbePatch()
         {
-            ProbeLauncher playerProbeLauncher = null;
             foreach (var launcher in FindObjectsOfType<ProbeLauncher>())
             {
-                if (launcher.GetName().ToString() == "Player")
+                if (launcher.IsEquipped())
                 {
-                    playerProbeLauncher = launcher;
+                    launcher.SendMessage("TakeSnapshotWithCamera", launcher.GetValue<SurveyorProbe>("_activeProbe").GetForwardCamera());
+                    EnableCamera(launcher.GetValue<SurveyorProbe>("_activeProbe").GetForwardCamera());
                 }
             }
-            playerProbeLauncher.SendMessage("TakeSnapshotWithCamera", playerProbeLauncher.GetValue<SurveyorProbe>("_activeProbe").GetForwardCamera());
-            EnableCamera(playerProbeLauncher.GetValue<SurveyorProbe>("_activeProbe").GetForwardCamera());
+
         }
 
         private static void RetrieveProbePatch()
@@ -85,16 +83,14 @@ namespace ScoutStreaming
         }
         private static void OnAnchorPatch()
         {
-            ProbeLauncher playerProbeLauncher = null;
             foreach (var launcher in FindObjectsOfType<ProbeLauncher>())
             {
-                if (launcher.GetName().ToString() == "Player")
+                if (launcher.IsEquipped())
                 {
-                    playerProbeLauncher = launcher;
+                    launcher.SendMessage("TakeSnapshotWithCamera", launcher.GetValue<SurveyorProbe>("_activeProbe").GetRotatingCamera());
+                    EnableCamera(launcher.GetValue<SurveyorProbe>("_activeProbe").GetRotatingCamera());
                 }
             }
-            playerProbeLauncher.SendMessage("TakeSnapshotWithCamera", playerProbeLauncher.GetValue<SurveyorProbe>("_activeProbe").GetRotatingCamera());
-            EnableCamera(playerProbeLauncher.GetValue<SurveyorProbe>("_activeProbe").GetRotatingCamera());
         }
 
         private static void SnapshotPatch(ProbeCamera camera)
@@ -102,7 +98,7 @@ namespace ScoutStreaming
             Instance.probeCamera = camera;
             foreach (var probeCamera in FindObjectsOfType<ProbeCamera>())
             {
-                probeCamera.GetComponent<OWCamera>().enabled = false;
+                probeCamera.GetOWCamera().enabled = false;
             }
         }
 
@@ -117,16 +113,15 @@ namespace ScoutStreaming
         }
         private void RetakeSnapshotAfterRetrieval()
         {
-            ProbeLauncher playerProbeLauncher = null;
             foreach (var launcher in FindObjectsOfType<ProbeLauncher>())
             {
-                if (launcher.GetName().ToString() == "Player")
+                if (launcher.IsEquipped())
                 {
-                    playerProbeLauncher = launcher;
+                    launcher.SendMessage("TakeSnapshotWithCamera", launcher.GetValue<ProbeCamera>("_preLaunchCamera"));
+                    EnableCamera(launcher.GetValue<ProbeCamera>("_preLaunchCamera"));
                 }
             }
-            playerProbeLauncher.SendMessage("TakeSnapshotWithCamera", playerProbeLauncher.GetValue<ProbeCamera>("_preLaunchCamera"));
-            EnableCamera(playerProbeLauncher.GetValue<ProbeCamera>("_preLaunchCamera"));
+
         }
         private static void HearthianSatteliteOnPatch()
         {
