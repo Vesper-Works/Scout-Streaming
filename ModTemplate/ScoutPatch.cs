@@ -23,10 +23,10 @@ namespace ScoutStreaming
                       BindingFlags.NonPublic | BindingFlags.Instance);
 
             ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("TakeSnapshotWithCamera", typeof(ScoutPatch), "SnapshotPatch");
-            ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("EquipTool", typeof(ScoutPatch), "EquipToolPatch");
-            ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("LaunchProbe", typeof(ScoutPatch), "LaunchProbePatch");
-            ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("RetrieveProbe", typeof(ScoutPatch), "RetrieveProbePatch");
-            ModHelper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(ScoutPatch), "OnAnchorPatch");
+            //ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("EquipTool", typeof(ScoutPatch), "EquipToolPatch");
+            //ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("LaunchProbe", typeof(ScoutPatch), "LaunchProbePatch");
+            //ModHelper.HarmonyHelper.AddPostfix<ProbeLauncher>("RetrieveProbe", typeof(ScoutPatch), "RetrieveProbePatch");
+            //ModHelper.HarmonyHelper.AddPostfix<SurveyorProbe>("OnAnchor", typeof(ScoutPatch), "OnAnchorPatch");
             ModHelper.HarmonyHelper.AddPostfix<SatelliteSnapshotController>("OnPressInteract", typeof(ScoutPatch), "HearthianSatteliteOnPatch");
             ModHelper.HarmonyHelper.AddPostfix<SatelliteSnapshotController>("TurnOffProjector", typeof(ScoutPatch), "HearthianSatteliteOffPatch");
 
@@ -38,6 +38,7 @@ namespace ScoutStreaming
             {
                 foreach (var thing in quantumObjects)
                 {
+                    if(thing == null) { continue; }
                     snapshotMethod.Invoke(thing, new object[] { probeCamera });
                 }
             }
@@ -100,6 +101,7 @@ namespace ScoutStreaming
             {
                 probeCamera.GetOWCamera().enabled = false;
             }
+            EnableCamera(camera);
         }
 
         private static void EnableCamera(ProbeCamera camera)
